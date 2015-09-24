@@ -3,6 +3,7 @@ org.xwiki.officeimporter.internal.builder.DefaultXDOMOfficeDocumentBuilder
 org.xwiki.officeimporter.internal.builder.DefaultPresentationBuilder
 org.xwiki.officeimporter.internal.splitter.DefaultXDOMOfficeDocumentSplitter
 org.xwiki.officeimporter.internal.filter.AnchorFilter
+org.xwiki.officeimporter.internal.filter.HeadingInOrderedListFilter
 org.xwiki.officeimporter.internal.filter.ImageFilter
 org.xwiki.officeimporter.internal.filter.LineBreakFilter
 org.xwiki.officeimporter.internal.filter.ListFilter

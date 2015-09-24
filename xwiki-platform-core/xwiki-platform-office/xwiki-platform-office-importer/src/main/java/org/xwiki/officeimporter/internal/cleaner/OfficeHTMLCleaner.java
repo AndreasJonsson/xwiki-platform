@@ -115,6 +115,10 @@ public class OfficeHTMLCleaner implements HTMLCleaner
     @Named("officeimporter/linebreak")
     private HTMLFilter lineBreakFilter;
 
+    @Inject
+    @Named("officeimporter/heading-in-ordered-list")
+    private HTMLFilter headingInOrderedListFilter;
+
     @Override
     public Document clean(Reader originalHtmlContent)
     {
@@ -142,6 +146,7 @@ public class OfficeHTMLCleaner implements HTMLCleaner
             this.stripperFilter,
             this.styleFilter,
             this.redundancyFilter,
+            this.headingInOrderedListFilter,
             this.paragraphFilter,
             this.imageFilter,
             this.anchorFilter,
