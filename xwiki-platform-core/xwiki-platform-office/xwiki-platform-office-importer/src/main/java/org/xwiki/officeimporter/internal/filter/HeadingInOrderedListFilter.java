@@ -37,8 +37,7 @@ import org.xwiki.xml.html.filter.AbstractHTMLFilter;
 
 /**
  * Sometimes the heading becomes wrapped in an ordered list structure such as this during import:
- * 1.
- * 
+ * 1. 
  * 11. 
  * 111. 
  * 1111. 
@@ -46,10 +45,28 @@ import org.xwiki.xml.html.filter.AbstractHTMLFilter;
  * ===== Heading text =====
  * )))
  *
- * This filter removes these structures.
+ * This filter removes the ordered list to produce the following:
+ *
+ * ===== Heading text =====
+ *
+ * The filter assumes that the ((( ))) has already been removed by the RedunancyFilter.
+ *
+ * Sometimes the importer also fails to terminate the ordered list such that the entire following section is included
+ * inside the list.  This filter also handles these cases.
+ *
+ * The algorithm is as follows:
+ *
+ * For all heading tags,
+ *
+ *   Find an ancestor chain consisting of ol or li tags, the topmost being an ol.
+ *
+ *   In the DOM tree rooted at the topmost ol, remove all ol and li tags of ol lists while keeping the contents of the
+ *   tags.
+ *
+ *   Replace the topmost ol with the preserved nodes in order in the original DOM.
  *
  * @version $Id$
- * @since 6.4.6
+ * @since 7.3M1
  */
 @Component
 @Named("officeimporter/heading-in-ordered-list")
@@ -96,15 +113,12 @@ public class HeadingInOrderedListFilter extends AbstractHTMLFilter
             final Element pe = (Element) parent;
             final String n = pe.getTagName();
             if (n.equals(TAG_LI) || n.equals(TAG_OL)) {
-                return getTopElement(pe);
-            }
-            if (n.equals(TAG_DIV)) {
-                // Only filter <div> tags that are inside list.
-                final Element te = getTopElement(pe);
-                if (te == pe) {
+                final Element topElement = getTopElement(pe);
+                if (!topElement.getTagName().equals(TAG_OL)) {
+                    // We do not meddle with other kinds of lists.
                     return e;
                 }
-                return te;
+                return topElement;
             }
         }
         return e;
